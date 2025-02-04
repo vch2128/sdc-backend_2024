@@ -131,7 +131,7 @@ async def create_item_with_extra_data_types(
 
 @app.get("/items/cookies/")
 async def read_item_with_cookies(
-    session_id: Annotated[str, Cookie(description="Session ID from the client's cookies.")]
+    session_id: Annotated[str, Cookie(description="Session ID from the client's cookies.")] = None
 ):
     result = {
         "session_id": session_id,
