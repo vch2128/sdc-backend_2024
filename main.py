@@ -15,11 +15,28 @@ class Item(BaseModel):
 class Item_Tag(Item):
     tags: list = []
 
+# HW2
 @app.get("/")
 async def root():
     return {
             "message": "Hello World"
             }
+
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, q: Annotated[str | None, Query()] = None):
+    result = {
+                "item_id": item_id,
+                "name": "Test Item",
+                "description": "A test description",
+                "price": 10.5,
+                "tax": 1.5
+                }
+    
+    if q:
+        result.update({"q": q})
+    
+    return result
+    
 
 # HW3
 @app.get("/items/{item_id}")
