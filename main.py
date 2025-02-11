@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query, Path, Body, Cookie
+from fastapi import FastAPI, Query, Path, Body, Cookie, Form, File, UploadFile, HTTPException
 from pydantic import BaseModel
 from datetime import datetime, time, timedelta
 from uuid import UUID
@@ -138,4 +138,27 @@ async def read_item_with_cookies(
         "message": "This is the session ID obtained from the cookies."
     }
 
+    return result
+
+
+# HW5
+@app.post("/items/form_and_file/")
+async def create_item_form_and_file(name: Annotated[str, Form()],
+                                    description: Annotated[str | None, Form()],
+                                    price: Annotated[float, Form()],
+                                    tax: Annotated[float | None, Form()],
+                                    file: Annotated[UploadFile, File()]
+                                    ):
+    if price < 0:
+        raise HTTPException(status_code=400, detail="Price cannot be negative")
+    
+    result = {
+        "name": name,
+        "description": description,
+        "price": price,
+        "tax": tax,
+        "filename": file.filename,
+        "message": "This is an item created using form data and a file."
+    }
+    
     return result
