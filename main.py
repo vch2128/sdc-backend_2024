@@ -22,20 +22,20 @@ async def root():
             "message": "Hello World"
             }
 
-@app.put("/items/{item_id}")
-async def update_item(item_id: int, q: Annotated[str | None, Query()] = None):
-    result = {
-                "item_id": item_id,
-                "name": "Test Item",
-                "description": "A test description",
-                "price": 10.5,
-                "tax": 1.5
-                }
+# @app.put("/items/{item_id}")
+# async def update_item(item_id: int, q: Annotated[str | None, Query()] = None):
+#     result = {
+#                 "item_id": item_id,
+#                 "name": "Test Item",
+#                 "description": "A test description",
+#                 "price": 10.5,
+#                 "tax": 1.5
+#                 }
     
-    if q:
-        result.update({"q": q})
+#     if q:
+#         result.update({"q": q})
     
-    return result
+#     return result
     
 
 # HW3
@@ -179,3 +179,31 @@ async def create_item_form_and_file(name: Annotated[str, Form()],
     }
     
     return result
+
+# HW6
+class Author(BaseModel):
+    name: str
+    age: int
+
+class Book(BaseModel):
+    title: str
+    author: Author
+    summary: str | None = None
+
+book1 = Book(title="Book 1", author=Author(name="Author 1", age=30), summary="Summary of Book 1")
+book2 = Book(title="Book 2", author=Author(name="Author 2", age=35), summary="Summary of Book 2")
+
+list_of_books = [book1, book2]
+
+@app.get("/books/")
+async def get_books() -> list[Book]:
+    return list_of_books
+
+@app.post("/books/create_with_author/")
+async def create_book_with_author(book: Book):
+    return book
+
+@app.post("/books/", status_code=201)
+async def create_book(new_book: Book):
+    list_of_books.append(new_book)
+    return new_book
